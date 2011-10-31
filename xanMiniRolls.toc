@@ -1,0 +1,7 @@
+## Interface: 40200
+## Title: xanMiniRolls
+## Notes: A small loot roll parser to make reading rolls easier ;)
+## Author: Xruptor
+## Version: 1.0
+
+xanMiniRolls.lua
