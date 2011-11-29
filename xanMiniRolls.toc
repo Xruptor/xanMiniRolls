@@ -1,4 +1,4 @@
-## Interface: 40200
+## Interface: 40300
 ## Title: xanMiniRolls
 ## Notes: A small loot roll parser to make reading rolls easier ;)
 ## Author: Xruptor

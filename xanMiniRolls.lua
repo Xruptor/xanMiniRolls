@@ -184,11 +184,12 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg)
 	--if detailed loot information is off then don't even bother
 	if tonumber(GetCVar("showLootSpam")) < 1 then return false end
 	
-	--here we will allow need rolls to pass, that way we can see if we need to press need on an item to prevent ninjas and such
-	--or if your not sure if you need to press need, sometimes I see it's better to just see it then hide it, for specific situations
+	--here we will allow need rolls to pass through the filter, that way we can see if we need to press NEED on an item to prevent ninjas and such
+	--or if your not sure if you need to press NEED, sometimes I see it's better to just see it then hide it, for specific situations
+	--especially if I feel I should only press NEED only if someone else presses NEED on an item that I want
 
-	--don't filter out need rolls
-	if msg:gsub(".(- )"," ", 1):match(  (LOOT_ROLL_ROLLED_NEED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1) ) then
+	--don't filter out need selections
+	if msg:match((LOOT_ROLL_NEED):gsub("%%s", "(.+)")) or msg:match((LOOT_ROLL_NEED_SELF):gsub("%%s", "(.+)")) then
 		return false
 	end
 
