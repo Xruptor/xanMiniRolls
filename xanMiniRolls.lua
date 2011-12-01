@@ -11,7 +11,12 @@ f:SetScript("OnEvent", function(self, event, ...) if self[event] then return sel
 --LOOT_ROLL_ROLLED_GREED = "Greed Roll - %d for %s by %s";
 --LOOT_ROLL_ROLLED_NEED = "Need Roll - %d for %s by %s";
 
-local playerRolls = {
+local playerRolls = GetLocale() == "deDE" and {
+	[(LOOT_ROLL_ROLLED_DE):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Disenchant",  --1 at the end is only replace first occurance :P
+	[(LOOT_ROLL_ROLLED_GREED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Greed",
+	[(LOOT_ROLL_ROLLED_NEED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Need"
+}
+or {
 	[(LOOT_ROLL_ROLLED_DE):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Disenchant",  --1 at the end is only replace first occurance :P
 	[(LOOT_ROLL_ROLLED_GREED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Greed",
 	[(LOOT_ROLL_ROLLED_NEED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Need"
@@ -24,7 +29,15 @@ local playerRolls = {
 --LOOT_ROLL_NEED = "%s has selected Need for: %s";
 --LOOT_ROLL_NEED_SELF = "You have selected Need for: %s";
 
-local playerSelections = {
+local playerSelections = GetLocale() == "deDE" and {
+	[(LOOT_ROLL_DISENCHANT):gsub("%%s", "(.+)")] = "Disenchant",
+	[(LOOT_ROLL_DISENCHANT_SELF):gsub("%%s", "(.+)")] = "Disenchant",
+	[(LOOT_ROLL_GREED):gsub("%%s", "(.+)")] = "Greed",
+	[(LOOT_ROLL_GREED_SELF):gsub("%%s", "(.+)")] = "Greed",
+	[(LOOT_ROLL_NEED):gsub("%%s", "(.+)")] = "Need",
+	[(LOOT_ROLL_NEED_SELF):gsub("%%s", "(.+)")] = "Need"
+}
+or {
 	[(LOOT_ROLL_DISENCHANT):gsub("%%s", "(.+)")] = "Disenchant",
 	[(LOOT_ROLL_DISENCHANT_SELF):gsub("%%s", "(.+)")] = "Disenchant",
 	[(LOOT_ROLL_GREED):gsub("%%s", "(.+)")] = "Greed",
@@ -36,7 +49,11 @@ local playerSelections = {
 -- LOOT_ROLL_WON = "%s won: %s";
 -- LOOT_ROLL_YOU_WON = "You won: %s";
 
-local playerWon = {
+local playerWon = GetLocale() == "deDE" and {
+	[(LOOT_ROLL_WON):gsub("%%s", "(.+)")] = "Need",
+	[(LOOT_ROLL_YOU_WON):gsub("%%s", "(.+)")] = "Need"
+}
+or {
 	[(LOOT_ROLL_WON):gsub("%%s", "(.+)")] = "Need",
 	[(LOOT_ROLL_YOU_WON):gsub("%%s", "(.+)")] = "Need"
 }
@@ -47,7 +64,14 @@ local playerWon = {
 --LOOT_ROLL_PASSED_SELF = "You passed on: %s";
 --LOOT_ROLL_PASSED_SELF_AUTO = "You automatically passed on: %s because you cannot loot that item.";
 
-local playerPassed = {
+local playerPassed = GetLocale() == "deDE" and {
+	[(LOOT_ROLL_PASSED):gsub("%%s", "(.+)")] = "Pass",
+	[(LOOT_ROLL_PASSED_AUTO):gsub("%%1$s", "(.+)"):gsub("%%2$s", "(.+)")] = "Pass",
+	[(LOOT_ROLL_PASSED_AUTO_FEMALE):gsub("%%1$s", "(.+)"):gsub("%%2$s", "(.+)")] = "Pass",
+	[(LOOT_ROLL_PASSED_SELF):gsub("%%s", "(.+)")] = "Pass",
+	[(LOOT_ROLL_PASSED_SELF_AUTO):gsub("%%s", "(.+)")] = "Pass"
+}
+or {
 	[(LOOT_ROLL_PASSED):gsub("%%s", "(.+)")] = "Pass",
 	[(LOOT_ROLL_PASSED_AUTO):gsub("%%s", "(.+)")] = "Pass",
 	[(LOOT_ROLL_PASSED_AUTO_FEMALE):gsub("%%s", "(.+)")] = "Pass",

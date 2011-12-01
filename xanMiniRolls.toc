@@ -2,6 +2,6 @@
 ## Title: xanMiniRolls
 ## Notes: A small loot roll parser to make reading rolls easier ;)
 ## Author: Xruptor
-## Version: 1.0
+## Version: 1.1
 
 xanMiniRolls.lua
