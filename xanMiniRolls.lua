@@ -11,12 +11,7 @@ f:SetScript("OnEvent", function(self, event, ...) if self[event] then return sel
 --LOOT_ROLL_ROLLED_GREED = "Greed Roll - %d for %s by %s";
 --LOOT_ROLL_ROLLED_NEED = "Need Roll - %d for %s by %s";
 
-local playerRolls = GetLocale() == "deDE" and {
-	[(LOOT_ROLL_ROLLED_DE):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Disenchant",  --1 at the end is only replace first occurance :P
-	[(LOOT_ROLL_ROLLED_GREED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Greed",
-	[(LOOT_ROLL_ROLLED_NEED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Need"
-}
-or {
+local playerRolls = {
 	[(LOOT_ROLL_ROLLED_DE):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Disenchant",  --1 at the end is only replace first occurance :P
 	[(LOOT_ROLL_ROLLED_GREED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Greed",
 	[(LOOT_ROLL_ROLLED_NEED):gsub("%%d", "(%%d+)"):gsub("%%s", "(.+)"):gsub(".(- )"," ", 1)] = "Need"
@@ -29,15 +24,7 @@ or {
 --LOOT_ROLL_NEED = "%s has selected Need for: %s";
 --LOOT_ROLL_NEED_SELF = "You have selected Need for: %s";
 
-local playerSelections = GetLocale() == "deDE" and {
-	[(LOOT_ROLL_DISENCHANT):gsub("%%s", "(.+)")] = "Disenchant",
-	[(LOOT_ROLL_DISENCHANT_SELF):gsub("%%s", "(.+)")] = "Disenchant",
-	[(LOOT_ROLL_GREED):gsub("%%s", "(.+)")] = "Greed",
-	[(LOOT_ROLL_GREED_SELF):gsub("%%s", "(.+)")] = "Greed",
-	[(LOOT_ROLL_NEED):gsub("%%s", "(.+)")] = "Need",
-	[(LOOT_ROLL_NEED_SELF):gsub("%%s", "(.+)")] = "Need"
-}
-or {
+local playerSelections = {
 	[(LOOT_ROLL_DISENCHANT):gsub("%%s", "(.+)")] = "Disenchant",
 	[(LOOT_ROLL_DISENCHANT_SELF):gsub("%%s", "(.+)")] = "Disenchant",
 	[(LOOT_ROLL_GREED):gsub("%%s", "(.+)")] = "Greed",
@@ -49,11 +36,7 @@ or {
 -- LOOT_ROLL_WON = "%s won: %s";
 -- LOOT_ROLL_YOU_WON = "You won: %s";
 
-local playerWon = GetLocale() == "deDE" and {
-	[(LOOT_ROLL_WON):gsub("%%s", "(.+)")] = "Need",
-	[(LOOT_ROLL_YOU_WON):gsub("%%s", "(.+)")] = "Need"
-}
-or {
+local playerWon = {
 	[(LOOT_ROLL_WON):gsub("%%s", "(.+)")] = "Need",
 	[(LOOT_ROLL_YOU_WON):gsub("%%s", "(.+)")] = "Need"
 }
