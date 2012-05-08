@@ -102,6 +102,7 @@ local function sendLootMsg(msg)
 end
 
 local function checkRollList(link, playerName, hasRolled, loadWinner)
+	if not link then return end
 	
 	--only keep 30 entries
 	if table.getn(rollList) > 30 then table.remove(rollList, 1) end
@@ -135,13 +136,17 @@ function f:CHAT_MSG_LOOT(event, msg, sender, lang, channelString, target, flags,
 
 	--if detailed loot information is off then don't even bother
 	if tonumber(GetCVar("showLootSpam")) < 1 then return end
+	--if we are solo then don't bother to continue just return
+	if GetNumRaidMembers() < 1 and GetRealNumPartyMembers() < 1 and GetNumPartyMembers() < 1 then return end
 	
 	--check to see if a roll was done (with value)
 	for str, rType in pairs(playerRolls) do
 		local val, link, player = msg:gsub(".(- )"," ", 1):match(str) --remove first hyphen
 		if player and val and link then
 			local tmpRoll = checkRollList(link, player, true)
-			tmpRoll[player] = {rollValue = val, rollType = rType}
+			if tmpRoll then
+				tmpRoll[player] = {rollValue = val, rollType = rType}
+			end
 			return
 		end
 	end
@@ -158,7 +163,9 @@ function f:CHAT_MSG_LOOT(event, msg, sender, lang, channelString, target, flags,
 			player = player == YOU and UnitName("player") or player
 
 			local tmpRoll = checkRollList(link, player)
-			tmpRoll[player] = {rollValue = 0, rollType = rType}
+			if tmpRoll then
+				tmpRoll[player] = {rollValue = 0, rollType = rType}
+			end
 			return
 		end
 	end
@@ -190,6 +197,8 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg)
 
 	--if detailed loot information is off then don't even bother
 	if tonumber(GetCVar("showLootSpam")) < 1 then return false end
+	--if we are solo then don't bother to continue just return false
+	if GetNumRaidMembers() < 1 and GetRealNumPartyMembers() < 1 and GetNumPartyMembers() < 1 then return false end
 	
 	--here we will allow need rolls to pass through the filter, that way we can see if we need to press NEED on an item to prevent ninjas and such
 	--or if your not sure if you need to press NEED, sometimes I see it's better to just see it then hide it, for specific situations
@@ -197,7 +206,29 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg)
 
 	--don't filter out need selections
 	if msg:match((LOOT_ROLL_NEED):gsub("%%s", "(.+)")) or msg:match((LOOT_ROLL_NEED_SELF):gsub("%%s", "(.+)")) then
-		return false
+	
+		--lets implement a semi sorta spam protection for multiple needs.  We only really need to show that one or two people rolled need on an item, if in the event
+		--the player ONLY wants to roll need if someone else did.  Basically to prevent ninja looting ;)
+		local id = msg:match('item:(%d+)')
+		
+		if id and tonumber(id) then
+			for k, v in ipairs(rollList) do
+				--make sure we have an item to work with
+				if v.itemLink then
+					local tmpID = string.match(v.itemLink, 'item:(%d+)')
+					if tmpID and tmpID == id and not v.spamCount then
+						v.spamCount = 1
+						return false
+					elseif tmpID and tmpID == id and v.spamCount < 3 then
+						v.spamCount = v.spamCount + 1
+						return false
+					end
+				end
+			end
+		end
+		
+		--spamCount didn take effect to silence further need rolls unless it's another of the same item in which case that item will have a lower spamCount
+		return true
 	end
 
 	--check rolls
@@ -234,6 +265,21 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg)
 
 end)
 
+--sort by key element rather then value
+local function pairsByKeys (t, f)
+	local a = {}
+		for n in pairs(t) do table.insert(a, n) end
+		table.sort(a, f)
+		local i = 0      -- iterator variable
+		local iter = function ()   -- iterator function
+			i = i + 1
+			if a[i] == nil then return nil
+			else return a[i], t[a[i]]
+			end
+		end
+	return iter
+end
+
 local orig2 = SetItemRef
 function SetItemRef(link, text, button)
 	local id = link:match("xanminirolls:(%d+)")
@@ -247,8 +293,8 @@ function SetItemRef(link, text, button)
 		ItemRefTooltip:ClearLines()
 		ItemRefTooltip:AddLine(selectionColors[rollType]..rollType.."|r - "..tmpRoll.itemLink)
 		ItemRefTooltip:AddDoubleLine("Winner:", "|cFF99CC33"..tmpRoll.winner.."|r")
-		for k, v in pairs(tmpRoll) do
-			if k ~= "itemLink" and k ~= "winner" then
+		for k, v in pairsByKeys(tmpRoll) do
+			if k ~= "itemLink" and k ~= "winner" and k ~= "spamCount" then
 				local msg = string.format("|cffffffff%s|r  (%s%s|r)", k, selectionColors[v.rollType], v.rollType)
 				ItemRefTooltip:AddDoubleLine(msg, v.rollValue)
 			end
